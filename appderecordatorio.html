@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>App de Recordatorios</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    .form {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      max-width: 400px;
+      margin: 0 auto 20px;
+    }
+
+    input, button {
+      padding: 10px;
+      margin: 5px 0;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    li {
+      background: white;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-left: 5px solid #007bff;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .fecha {
+      font-size: 0.9em;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <h1>📅 App de Recordatorios</h1>
+
+  <div class="form">
+    <input type="text" id="tarea" placeholder="Escribe la tarea..." />
+    <input type="datetime-local" id="fechaHora" />
+    <button onclick="agregarRecordatorio()">Agregar Recordatorio</button>
+  </div>
+
+  <ul id="lista"></ul>
+
+  <script>
+    const lista = document.getElementById('lista');
+    let recordatorios = [];
+
+    function agregarRecordatorio() {
+      const tarea = document.getElementById('tarea').value.trim();
+      const fechaHora = document.getElementById('fechaHora').value;
+
+      if (!tarea || !fechaHora) {
+        alert('Por favor, completa todos los campos');
+        return;
+      }
+
+      const nuevo = {
+        tarea,
+        fechaHora: new Date(fechaHora)
+      };
+      recordatorios.push(nuevo);
+      mostrarRecordatorios();
+      programarAlerta(nuevo);
+
+      document.getElementById('tarea').value = '';
+      document.getElementById('fechaHora').value = '';
+    }
+
+    function mostrarRecordatorios() {
+      lista.innerHTML = '';
+      recordatorios.sort((a, b) => a.fechaHora - b.fechaHora);
+      recordatorios.forEach((r) => {
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>${r.tarea}</strong><br>
+                        <span class="fecha">${r.fechaHora.toLocaleString()}</span>`;
+        lista.appendChild(li);
+      });
+    }
+
+    function programarAlerta(recordatorio) {
+      const ahora = new Date();
+      const tiempoRestante = recordatorio.fechaHora - ahora;
+
+      if (tiempoRestante > 0) {
+        setTimeout(() => {
+          alert(`⏰ ¡Recordatorio!: ${recordatorio.tarea}`);
+        }, tiempoRestante);
+      }
+    }
+  </script>
+</body>
+</html>
